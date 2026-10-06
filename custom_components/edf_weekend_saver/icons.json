@@ -1,0 +1,29 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "peak_period": { "default": "mdi:transmission-tower", "state": { "on": "mdi:transmission-tower-export" } },
+      "free_electricity": { "default": "mdi:lightning-bolt-outline", "state": { "on": "mdi:lightning-bolt" } },
+      "on_target": { "default": "mdi:target", "state": { "on": "mdi:bullseye-arrow" } }
+    },
+    "calendar": { "free_hours": { "default": "mdi:calendar-star" } },
+    "number": { "awarded_hours": { "default": "mdi:gift-outline" } },
+    "sensor": {
+      "peak_percentage": { "default": "mdi:percent-circle" },
+      "peak_energy": { "default": "mdi:transmission-tower" },
+      "total_energy": { "default": "mdi:lightning-bolt" },
+      "peak_headroom": { "default": "mdi:gauge" },
+      "projected_free_hours": { "default": "mdi:clock-star-four-points" },
+      "previous_peak_percentage": { "default": "mdi:history" },
+      "booked_free_hours": { "default": "mdi:calendar-check" },
+      "unbooked_free_hours": { "default": "mdi:calendar-question" },
+      "next_free_slot": { "default": "mdi:calendar-clock" },
+      "free_energy_used": { "default": "mdi:lightning-bolt-circle" },
+      "savings_this_window": { "default": "mdi:piggy-bank" },
+      "lifetime_savings": { "default": "mdi:cash-multiple" }
+    }
+  },
+  "services": {
+    "book_free_hours": { "service": "mdi:calendar-plus" },
+    "cancel_free_hours": { "service": "mdi:calendar-remove" }
+  }
+}

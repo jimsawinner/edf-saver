@@ -1,0 +1,73 @@
+blueprint:
+  name: EDF Weekend Saver - run devices during free electricity
+  description: >
+    Turn devices on when one of your booked Weekend Saver free hours starts,
+    and (optionally) off again when the free hours end. Good for EV chargers,
+    immersion heaters, dishwashers and washing machines on smart plugs, or
+    home batteries.
+  domain: automation
+  source_url: https://github.com/jimsawinner/edf-saver/blob/main/blueprints/automation/edf_weekend_saver/run_during_free_electricity.yaml
+  input:
+    free_sensor:
+      name: Free electricity sensor
+      selector:
+        entity:
+          filter:
+            - integration: edf_weekend_saver
+              domain: binary_sensor
+    targets:
+      name: Devices to turn on
+      selector:
+        target:
+    turn_off_after:
+      name: Turn off when free hours end
+      default: true
+      selector:
+        boolean:
+    start_actions:
+      name: Extra actions when free hours start
+      default: []
+      selector:
+        action:
+    end_actions:
+      name: Extra actions when free hours end
+      default: []
+      selector:
+        action:
+
+mode: restart
+
+trigger:
+  - trigger: state
+    entity_id: !input free_sensor
+    to: "on"
+    id: start
+  - trigger: state
+    entity_id: !input free_sensor
+    from: "on"
+    to: "off"
+    id: end
+
+variables:
+  turn_off_after: !input turn_off_after
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: start
+        sequence:
+          - action: homeassistant.turn_on
+            target: !input targets
+          - sequence: !input start_actions
+      - conditions:
+          - condition: trigger
+            id: end
+        sequence:
+          - if:
+              - condition: template
+                value_template: "{{ turn_off_after }}"
+            then:
+              - action: homeassistant.turn_off
+                target: !input targets
+          - sequence: !input end_actions

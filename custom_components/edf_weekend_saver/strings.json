@@ -1,0 +1,101 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "EDF Weekend Saver",
+        "description": "Choose the sensor that measures your total grid electricity import. It must record long-term statistics (the same kind of sensor you would add to the Energy dashboard), e.g. from a Glow/Hildebrand smart meter display or a CT clamp.",
+        "data": {
+          "energy_sensor": "Electricity import sensor",
+          "unit_rate": "Electricity unit rate"
+        },
+        "data_description": {
+          "energy_sensor": "A cumulative kWh sensor with state class total or total_increasing.",
+          "unit_rate": "Your unit rate in pence per kWh, used to value the free electricity you use."
+        }
+      }
+    },
+    "error": {
+      "entity_not_found": "That sensor could not be found.",
+      "no_statistics": "This sensor has no state class of total or total_increasing, so Home Assistant does not keep the statistics needed.",
+      "bad_unit": "This sensor must be measured in Wh, kWh or MWh."
+    },
+    "abort": {
+      "already_configured": "This sensor is already set up for Weekend Saver."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "EDF Weekend Saver options",
+        "data": {
+          "energy_sensor": "Electricity import sensor",
+          "unit_rate": "Electricity unit rate"
+        },
+        "data_description": {
+          "energy_sensor": "A cumulative kWh sensor with state class total or total_increasing.",
+          "unit_rate": "Your unit rate in pence per kWh, used to value the free electricity you use."
+        }
+      }
+    },
+    "error": {
+      "entity_not_found": "That sensor could not be found.",
+      "no_statistics": "This sensor has no state class of total or total_increasing, so Home Assistant does not keep the statistics needed.",
+      "bad_unit": "This sensor must be measured in Wh, kWh or MWh."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "peak_period": { "name": "Peak period" },
+      "free_electricity": { "name": "Free electricity" },
+      "on_target": { "name": "On target" }
+    },
+    "calendar": {
+      "free_hours": { "name": "Free hours" }
+    },
+    "number": {
+      "awarded_hours": { "name": "Free hours awarded" }
+    },
+    "sensor": {
+      "peak_percentage": { "name": "Peak usage" },
+      "peak_energy": { "name": "Peak energy" },
+      "total_energy": { "name": "Total energy" },
+      "peak_headroom": { "name": "Peak headroom" },
+      "projected_free_hours": { "name": "Projected free hours" },
+      "previous_peak_percentage": { "name": "Last period peak usage" },
+      "booked_free_hours": { "name": "Booked free hours" },
+      "unbooked_free_hours": { "name": "Unbooked free hours" },
+      "next_free_slot": { "name": "Next free hour" },
+      "free_energy_used": { "name": "Free energy used" },
+      "savings_this_window": { "name": "Savings this month" },
+      "lifetime_savings": { "name": "Total savings" }
+    }
+  },
+  "exceptions": {
+    "not_on_hour": { "message": "Free hours must start on the hour ({time})." },
+    "outside_redemption_hours": { "message": "{time} is outside the Weekend Saver free hours (Saturday or Sunday, 00:00-15:00)." },
+    "entry_not_found": { "message": "Could not find a single loaded EDF Weekend Saver entry; pass config_entry_id." },
+    "all_day_not_supported": { "message": "Free hours must have a start and end time, not be all-day." },
+    "whole_hours_only": { "message": "Free hours must last at least one whole hour." },
+    "event_not_found": { "message": "That free-hours booking was not found." }
+  },
+  "services": {
+    "book_free_hours": {
+      "name": "Book free hours",
+      "description": "Record free-electricity hours you chose in the EDF app.",
+      "fields": {
+        "start": { "name": "Start", "description": "Start of the first free hour (Saturday or Sunday, on the hour, before 15:00)." },
+        "hours": { "name": "Hours", "description": "Number of consecutive hours." },
+        "config_entry_id": { "name": "Config entry", "description": "Only needed if you have more than one Weekend Saver entry." }
+      }
+    },
+    "cancel_free_hours": {
+      "name": "Cancel free hours",
+      "description": "Remove booked free-electricity hours.",
+      "fields": {
+        "start": { "name": "Start", "description": "Start of the first hour to remove." },
+        "hours": { "name": "Hours", "description": "Number of consecutive hours to remove." },
+        "config_entry_id": { "name": "Config entry", "description": "Only needed if you have more than one Weekend Saver entry." }
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+blueprint:
+  name: EDF Weekend Saver - peak usage warning
+  description: >
+    Notify you when this month's peak share rises above a warning level,
+    so you can cut back before falling into a lower reward band.
+  domain: automation
+  source_url: https://github.com/jimsawinner/edf-saver/blob/main/blueprints/automation/edf_weekend_saver/peak_usage_warning.yaml
+  input:
+    peak_usage_sensor:
+      name: Peak usage sensor
+      selector:
+        entity:
+          filter:
+            - integration: edf_weekend_saver
+              domain: sensor
+    threshold:
+      name: Warn above (%)
+      default: 8
+      selector:
+        number:
+          min: 1
+          max: 30
+          step: 0.5
+          unit_of_measurement: "%"
+    notify_actions:
+      name: Notification actions
+      description: >
+        For example a notify action. The variable `percent` is available
+        in templates.
+      selector:
+        action:
+
+mode: single
+
+trigger:
+  - trigger: numeric_state
+    entity_id: !input peak_usage_sensor
+    above: !input threshold
+
+variables:
+  usage_sensor: !input peak_usage_sensor
+  percent: "{{ states(usage_sensor) }}"
+
+action:
+  - sequence: !input notify_actions

@@ -1,0 +1,13 @@
+{
+  "domain": "edf_weekend_saver",
+  "name": "EDF Weekend Saver",
+  "codeowners": ["@jimsawinner"],
+  "config_flow": true,
+  "dependencies": ["recorder"],
+  "documentation": "https://github.com/jimsawinner/edf-saver",
+  "integration_type": "service",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/jimsawinner/edf-saver/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}
