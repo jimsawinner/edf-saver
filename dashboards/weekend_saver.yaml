@@ -1,0 +1,119 @@
+# EDF Weekend Saver dashboard.
+# Settings -> Dashboards -> Add dashboard -> New dashboard from scratch,
+# then open it, ... -> Edit dashboard -> ... -> Raw configuration editor and
+# paste this file. Entity ids assume the default "EDF Weekend Saver" name.
+title: Weekend Saver
+views:
+  - title: Weekend Saver
+    path: weekend-saver
+    icon: mdi:lightning-bolt
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: This month's target
+            icon: mdi:target
+          - type: gauge
+            entity: sensor.edf_weekend_saver_peak_usage
+            name: Peak share (4-7pm weekdays)
+            min: 0
+            max: 25
+            needle: true
+            segments:
+              - from: 0
+                color: "#2e7d32"
+                label: 25 free hours
+              - from: 9
+                color: "#9e9d24"
+                label: 15 free hours
+              - from: 12
+                color: "#f9a825"
+                label: 10 free hours
+              - from: 15
+                color: "#ef6c00"
+                label: 5 free hours
+              - from: 18
+                color: "#c62828"
+                label: No free hours
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.edf_weekend_saver_projected_free_hours
+            name: On track for
+          - type: tile
+            entity: binary_sensor.edf_weekend_saver_on_target
+            name: Under 9%
+          - type: tile
+            entity: sensor.edf_weekend_saver_peak_headroom
+            name: Peak kWh to spare
+          - type: tile
+            entity: binary_sensor.edf_weekend_saver_peak_period
+            name: Peak now
+          - type: tile
+            entity: sensor.edf_weekend_saver_peak_energy
+          - type: tile
+            entity: sensor.edf_weekend_saver_total_energy
+          - type: markdown
+            content: >-
+              {% set s = 'sensor.edf_weekend_saver_peak_usage' %}
+              Service period **{{ state_attr(s, 'service_period_start') }}** to
+              **{{ state_attr(s, 'service_period_end') }}**.
+              {% if state_attr(s, 'next_band_percent') %}
+              Get under **{{ state_attr(s, 'next_band_percent') }}%** for
+              **{{ state_attr(s, 'next_band_free_hours') }}** free hours.
+              {% else %}You're in the top band - keep it up!{% endif %}
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: Free hours
+            icon: mdi:calendar-star
+          - type: tile
+            entity: number.edf_weekend_saver_free_hours_awarded
+            name: Awarded
+          - type: tile
+            entity: sensor.edf_weekend_saver_booked_free_hours
+            name: Booked
+          - type: tile
+            entity: sensor.edf_weekend_saver_unbooked_free_hours
+            name: Still to book
+          - type: tile
+            entity: binary_sensor.edf_weekend_saver_free_electricity
+            name: Free right now
+          - type: tile
+            entity: sensor.edf_weekend_saver_next_free_hour
+            grid_options:
+              columns: 12
+          - type: calendar
+            entities:
+              - calendar.edf_weekend_saver_free_hours
+            initial_view: listWeek
+            grid_options:
+              columns: 12
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: What you've earned
+            icon: mdi:piggy-bank
+          - type: tile
+            entity: sensor.edf_weekend_saver_savings_this_month
+            name: This month
+          - type: tile
+            entity: sensor.edf_weekend_saver_total_savings
+            name: All time
+          - type: tile
+            entity: sensor.edf_weekend_saver_free_energy_used
+            name: Free kWh used
+          - type: tile
+            entity: sensor.edf_weekend_saver_last_period_peak_usage
+            name: Last month
+          - type: history-graph
+            title: Peak share this month
+            hours_to_show: 744
+            entities:
+              - sensor.edf_weekend_saver_peak_usage
+            grid_options:
+              columns: 12

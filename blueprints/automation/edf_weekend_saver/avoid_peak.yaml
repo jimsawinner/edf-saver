@@ -1,0 +1,63 @@
+blueprint:
+  name: EDF Weekend Saver - pause devices during peak
+  description: >
+    Turn devices off when the weekday 4-7pm peak starts and (optionally) back
+    on when it ends, to keep your peak share under the 9% target.
+  domain: automation
+  source_url: https://github.com/jimsawinner/edf-saver/blob/main/blueprints/automation/edf_weekend_saver/avoid_peak.yaml
+  input:
+    peak_sensor:
+      name: Peak period sensor
+      selector:
+        entity:
+          filter:
+            - integration: edf_weekend_saver
+              domain: binary_sensor
+    targets:
+      name: Devices to pause
+      selector:
+        target:
+    restore_after:
+      name: Turn back on after the peak
+      default: true
+      selector:
+        boolean:
+    notify_action:
+      name: Optional notification actions when the peak starts
+      default: []
+      selector:
+        action:
+
+mode: restart
+
+trigger:
+  - trigger: state
+    entity_id: !input peak_sensor
+    to: "on"
+    id: start
+  - trigger: state
+    entity_id: !input peak_sensor
+    from: "on"
+    to: "off"
+    id: end
+
+variables:
+  restore_after: !input restore_after
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: start
+        sequence:
+          - action: homeassistant.turn_off
+            target: !input targets
+          - sequence: !input notify_action
+      - conditions:
+          - condition: trigger
+            id: end
+          - condition: template
+            value_template: "{{ restore_after }}"
+        sequence:
+          - action: homeassistant.turn_on
+            target: !input targets
